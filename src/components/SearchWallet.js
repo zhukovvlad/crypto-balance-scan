@@ -10,7 +10,7 @@ const SearchWallet = () => {
   const [addressBalance, setAddressBalance] = useState("");
 
   const findBalance = async (address) => {
-    const {data} = await axios
+    const { data } = await axios
       .get(getFtmBalance(address, "4ZD4NJG647KEDEG2DK8XAU5URMUIFYQEXQ"))
       .catch((error) => {
         return error;
@@ -39,7 +39,7 @@ const SearchWallet = () => {
           </Button>
         </Grid>
       </Grid>
-      <p></p>{addressBalance}
+      <p>{addressBalance}</p>
     </Fragment>
   );
 };
