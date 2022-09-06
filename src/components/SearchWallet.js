@@ -1,9 +1,10 @@
-import { Grid, TextField, Button } from "@mui/material";
+import { Grid, TextField, Button, Container } from "@mui/material";
 import axios from "axios";
-import React, { Fragment } from "react";
+import React from "react";
 import { useState } from "react";
 
-import { getFtmBalance } from "../config/apis";
+import { getFtmBalance, getNormalTransactionsFtm } from "../config/apis";
+import { numberWithCommas } from "../utils/usefulFunc";
 
 const SearchWallet = () => {
   const [wallet, setWallet] = useState("");
@@ -16,11 +17,19 @@ const SearchWallet = () => {
         return error;
       });
     console.log(data);
-    setAddressBalance(data.result / 10 ** 18);
+    setAddressBalance(numberWithCommas((data.result / 10 ** 18).toFixed(3)));
+    const allTrans = await axios
+      .get(
+        getNormalTransactionsFtm(address, "4ZD4NJG647KEDEG2DK8XAU5URMUIFYQEXQ")
+      )
+      .catch((error) => {
+        return error;
+      });
+    console.log(allTrans);
   };
 
   return (
-    <Fragment>
+    <Container sx={{ marginY: 2 }}>
       <Grid container spacing={1}>
         <Grid item xs={8}>
           <TextField
@@ -31,6 +40,7 @@ const SearchWallet = () => {
         </Grid>
         <Grid item xs={4}>
           <Button
+            sx={{ minHeight: "100%" }}
             color="primary"
             variant="contained"
             onClick={() => findBalance(wallet)}
@@ -39,8 +49,8 @@ const SearchWallet = () => {
           </Button>
         </Grid>
       </Grid>
-      <p>{addressBalance}</p>
-    </Fragment>
+      {addressBalance ? <p>{addressBalance}</p> : <p>No address entered</p>}
+    </Container>
   );
 };
 
